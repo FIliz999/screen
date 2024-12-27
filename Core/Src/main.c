@@ -18,10 +18,12 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "ili9341/ili9341.h"
-#include "def.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ili9341/ili9341.h"
+#include "def.h"
+#include "time.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,6 +42,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+RTC_HandleTypeDef hrtc;
+
 SPI_HandleTypeDef hspi3;
 
 UART_HandleTypeDef huart2;
@@ -53,6 +57,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -65,27 +70,65 @@ static void MX_SPI3_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
-
 int main(void)
 {
-    /* MCU Configuration */
-    HAL_Init();
 
-    SystemClock_Config();
-    MX_GPIO_Init();
-    MX_SPI3_Init();  // Initialisation SPI1 pour la communication avec l'écran
+  /* USER CODE BEGIN 1 */
 
-    ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
-    ILI9341_InitWindowsWithFont(hspi3, 0x0000);
+  /* USER CODE END 1 */
 
-    // Affiche "AAAAAA" au centre de l'écran
-    uint16_t text_color = 0xFFFF; // Blanc
-    ILI9341_InitDrawString("00:15", text_color, 0x0000, hspi3);
+  /* MCU Configuration--------------------------------------------------------*/
 
-    while (1) {
-        // Boucle principale
-    }
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+  MX_SPI3_Init();
+  /* USER CODE BEGIN 2 */
+  MX_RTC_Init();
+  TIME_SetRTCTime(&hrtc);
+  ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
+  ILI9341_InitWindowsWithFont(hspi3, 0x0000);
+  uint16_t text_color = 0xFFFF; // Blanc
+  char timeChar[6];
+
+  sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
+  ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+
+
+  uint8_t lastMinutes = TIME_GetTime(&hrtc).Minutes;
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+	if (lastMinutes != TIME_GetTime(&hrtc).Minutes)
+	{
+		ILI9341_InitWindowsWithFont(hspi3, 0x0000);
+		uint16_t text_color = 0xFFFF; // Blanc
+		ILI9341_InitDrawString("00:16", text_color, 0x0000, hspi3);
+	}
+    /* USER CODE BEGIN 3 */
+	  HAL_Delay(100);
+  }
+  /* USER CODE END 3 */
 }
+
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -103,9 +146,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 16;
@@ -130,6 +174,42 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+  HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);  // Priorité haute
+  HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
+  /* USER CODE END RTC_Init 2 */
+
 }
 
 /**

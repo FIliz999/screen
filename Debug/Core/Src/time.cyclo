@@ -1,0 +1,5 @@
+../Core/Src/time.c:13:6:TIME_SetRTCTime	2
+../Core/Src/time.c:30:17:TIME_GetTime	2
+../Core/Src/time.c:40:6:MX_RTC_SetAlarm	2
+../Core/Src/time.c:66:6:HAL_RTC_AlarmAEventCallback	1
+../Core/Src/time.c:79:6:RTC_Alarm_IRQHandler	1
