@@ -76,20 +76,11 @@ int main(void)
     MX_SPI3_Init();  // Initialisation SPI1 pour la communication avec l'écran
 
     ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
-
-
-    // Efface l'écran avec une couleur de fond (noir)
-    ILI9341_SetWindow(0, 0, H_LCD - 1, W_LCD - 1, hspi3);
-    uint16_t bgcolor = 0x0000; // Noir
-    for (uint16_t x = 0; x < W_LCD; x++) {
-        for (uint16_t y = 0; y < H_LCD; y++) {
-            ILI9341_WritePixel(x, y, bgcolor, hspi3);
-        }
-    }
+    ILI9341_InitWindowsWithFont(hspi3, 0x0000);
 
     // Affiche "AAAAAA" au centre de l'écran
     uint16_t text_color = 0xFFFF; // Blanc
-    ILI9341_DrawString(10, 0, "00:15", text_color, 0x0000, hspi3);
+    ILI9341_InitDrawString("00:15", text_color, 0x0000, hspi3);
 
     while (1) {
         // Boucle principale
