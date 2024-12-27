@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "ili9341/ili9341.h"
-#include "ili9341/fonts.h"
+#include "def.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -66,41 +66,6 @@ static void MX_SPI3_Init(void);
   * @retval int
   */
 
-// Dessine un caractère en utilisant une police 8x8
-void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
-	if (c < 32 || c > 126) {
-	        c = '?'; // Si le caractère n'est pas supporté
-	}
-
-	// Trouver l'index du caractère dans la table (32 = espace, donc l'index est c - 32)
-	const uint8_t *glyph = FONTS[c - 32];  // Font_5x8[caractère - 32]
-
-	// Parcourir chaque ligne du caractère (chaque ligne est représentée par un octet)
-	for (int i = 0; i < 8; i++) {  // Parcourt les lignes (de 0 à 7)
-		for (int j = 0; j < 5; j++) {  // Parcourt les colonnes (de 0 à 4)
-			if (glyph[j] & (1 << i)) {  // Vérifie si le bit est 1 (pixel actif)
-				ILI9341_WritePixel(x + j, y + i, color, hspi3);  // Dessine le pixel en couleur
-			} else {
-				ILI9341_WritePixel(x + j, y + i, bgcolor, hspi3);  // Dessine le pixel en couleur de fond
-			}
-		}
-	}
-
-    // Ajoute un espace entre les caractères
-    for (int8_t j = 0; j < 7; j++) {
-        ILI9341_WritePixel(x + 5, y + j, bgcolor, hspi3);
-    }
-}
-
-// Dessine une chaîne de caractères
-void ILI9341_DrawString(uint16_t x, uint16_t y, const char *str, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
-    while (*str) {
-        ILI9341_DrawChar(x, y, *str, color, bgcolor, hspi3);
-        x += 6; // Largeur d'un caractère (8 pixels + 1 pixel de marge)
-        str++;
-    }
-}
-
 int main(void)
 {
     /* MCU Configuration */
@@ -114,17 +79,17 @@ int main(void)
 
 
     // Efface l'écran avec une couleur de fond (noir)
-    ILI9341_SetWindow(0, 0, 240 - 1, 320 - 1, hspi3);
+    ILI9341_SetWindow(0, 0, H_LCD - 1, W_LCD - 1, hspi3);
     uint16_t bgcolor = 0x0000; // Noir
-    for (uint16_t x = 0; x < 240; x++) {
-        for (uint16_t y = 0; y < 320; y++) {
+    for (uint16_t x = 0; x < W_LCD; x++) {
+        for (uint16_t y = 0; y < H_LCD; y++) {
             ILI9341_WritePixel(x, y, bgcolor, hspi3);
         }
     }
 
     // Affiche "AAAAAA" au centre de l'écran
     uint16_t text_color = 0xFFFF; // Blanc
-    ILI9341_DrawString(60, 150, "JE T'AIME", 0xFFFF, 0x0000, hspi3);
+    ILI9341_DrawString(10, 0, "00:15", text_color, 0x0000, hspi3);
 
     while (1) {
         // Boucle principale

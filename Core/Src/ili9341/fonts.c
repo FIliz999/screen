@@ -1,7 +1,7 @@
 #include "fonts.h"
 
 // Exemple de police 8x8 (uniquement les caractères ASCII de base)
-const uint8_t FONTS[][5] = {
+const uint8_t FONTS5_8[][5] = {
   { 0x00, 0x00, 0x00, 0x00, 0x00 }, // 20 space
   { 0x81, 0x81, 0x18, 0x81, 0x81 }, // 21 !
   { 0x00, 0x07, 0x00, 0x07, 0x00 }, // 22 "

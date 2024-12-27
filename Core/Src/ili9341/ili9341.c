@@ -53,6 +53,7 @@ void ILI9341_SoftReset(SPI_HandleTypeDef hspi3);
 void LCD_WR_REG(uint8_t data, SPI_HandleTypeDef hspi3);
 static void LCD_WR_DATA(uint8_t data, SPI_HandleTypeDef hspi3);
 static void LCD_direction(LCD_Horizontal_t direction, SPI_HandleTypeDef hspi3);
+static void ILI9341_WritePixelsFullHeight(uint16_t x, uint16_t y, int i, int j, uint16_t scaleY, uint16_t scaleX,uint16_t color, SPI_HandleTypeDef hspi3 );
 static void RESET_L(void);
 static void RESET_H(void);
 static void CS_L(void);
@@ -314,6 +315,60 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 	spiDmaTransferComplete = 1;
 }
 */
+
+// Dessine un caractère en utilisant une police 8x8
+void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
+	if (c < 32 || c > 126) {
+	        c = '?'; // Si le caractère n'est pas supporté
+	}
+
+	// Trouver l'index du caractère dans la table (32 = espace, donc l'index est c - 32)
+	const uint8_t *glyph = FONTS5_8[c - 32];  // Font_5x8[caractère - 32]
+	const uint16_t scaleX = W_LCD / (8*5);
+	const uint16_t scaleY = H_LCD / 8;
+
+	// Parcourir chaque ligne du caractère (chaque ligne est représentée par un octet)
+	for (int i = 0; i < 8; i++) {  // Parcourt les lignes (de 0 à 7)
+		for (int j = 0; j < 5; j++) {  // Parcourt les colonnes (de 0 à 4)
+			if (glyph[j] & (1 << i)) {  // Si le bit est actif
+				for (int dy = 0; dy < scaleY; dy++) {
+					for (int dx = 0; dx < scaleX; dx++) {
+						ILI9341_WritePixel(x + j * scaleX + dx, y + i * scaleY + dy, color, hspi3);
+					}
+				}
+			} else {
+				// Dessiner le fond pour ce bloc
+				for (int dy = 0; dy < scaleY; dy++) {
+					for (int dx = 0; dx < scaleX; dx++) {
+						ILI9341_WritePixel(x + j * scaleX + dx, y + i * scaleY + dy, bgcolor, hspi3);
+					}
+				}
+			}
+		}
+	}
+
+    // Ajoute un espace entre les caractères
+    for (int8_t j = 0; j < 7; j++) {
+        ILI9341_WritePixel(x + 5, y + j, bgcolor, hspi3);
+    }
+}
+
+static void ILI9341_WritePixelsFullHeight(uint16_t x, uint16_t y, int i, int j, uint16_t scaleY, uint16_t scaleX,uint16_t color, SPI_HandleTypeDef hspi3 )
+{
+	for (int dy = 0; dy < scaleY; dy++) {
+		for (int dx = 0; dx < scaleX; dx++) {
+			ILI9341_WritePixel(x + j * scaleX + dx, y + i * scaleY + dy, color, hspi3);
+		}
+	}
+}
+// Dessine une chaîne de caractères
+void ILI9341_DrawString(uint16_t x, uint16_t y, const char *str, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
+    while (*str) {
+        ILI9341_DrawChar(x, y, *str, color, bgcolor, hspi3);
+        x += 6; // Largeur d'un caractère (8 pixels + 1 pixel de marge)
+        str++;
+    }
+}
 
 static void LCD_direction(LCD_Horizontal_t direction, SPI_HandleTypeDef hspi3)
 {
