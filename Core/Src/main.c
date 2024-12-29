@@ -18,12 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stdio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ili9341/ili9341.h"
-#include "def.h"
-#include "time.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,7 +47,10 @@ SPI_HandleTypeDef hspi3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+RTC_DateTypeDef Date;
+RTC_TimeTypeDef Time;
+char time[10];
+char date[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,6 +59,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_RTC_Init(void);
+int __io_putchar(int ch);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -96,20 +98,9 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_SPI3_Init();
-  /* USER CODE BEGIN 2 */
   MX_RTC_Init();
-  TIME_SetRTCTime(&hrtc);
-  ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
-  ILI9341_InitWindowsWithFont(hspi3, 0x0000);
-  uint16_t text_color = 0xFFFF; // Blanc
-  char timeChar[6];
-
-  sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
-  ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
-
-  RTC_TimeTypeDef currentTime;
-  uint8_t lastMinutes = TIME_GetTime(&hrtc).Minutes;
-  uint8_t lastSeconds = 0xFF;
+  /* USER CODE BEGIN 2 */
+  printf("RTC time\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,17 +108,13 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	/* Lire l'heure actuelle */
-	currentTime = TIME_GetTime(&hrtc);
-	if (lastMinutes != currentTime.Minutes)
-	{
-		ILI9341_InitWindowsWithFont(hspi3, 0x0000);
-		uint16_t text_color = 0xFFFF; // Blanc
-		sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
-		ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
-	}
+
     /* USER CODE BEGIN 3 */
-	  HAL_Delay(100);
+	  HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
+	  HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
+	  printf("Date year %02d\n", 2000 + Date.Year);
+	  printf("Time %02d\n", Time.Seconds);
+	  HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
@@ -191,6 +178,9 @@ static void MX_RTC_Init(void)
 
   /* USER CODE END RTC_Init 0 */
 
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
   /* USER CODE BEGIN RTC_Init 1 */
 
   /* USER CODE END RTC_Init 1 */
@@ -205,6 +195,31 @@ static void MX_RTC_Init(void)
   hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
   hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
   if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 10;
+  sTime.Minutes = 24;
+  sTime.Seconds = 45;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 1;
+  sDate.Year = 0;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
   {
     Error_Handler();
   }
@@ -309,12 +324,6 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, CS_LCD_Pin|RESET_LCD_Pin|DC_LCD_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -331,6 +340,12 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
+}
+
+int __io_putchar(int ch)
+{
+	HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
+	return ch;
 }
 
 /* USER CODE BEGIN 4 */

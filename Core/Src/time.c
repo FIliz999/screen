@@ -62,19 +62,6 @@ void MX_RTC_SetAlarm(RTC_HandleTypeDef *hrtc) {
     }
 }
 
-// Cette fonction sera appelée lors du changement de minute (alarme RTC)
-void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
-
-    // Récupérer l'heure actuelle
-    HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN);
-
-    // Afficher ou gérer l'événement de changement de minute
-    printf("Changement de minute détecté : %02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
-
-    // Reconfigurer l'alarme pour la prochaine minute
-    MX_RTC_SetAlarm(hrtc);
-}
-
 /* Interruption RTC Alarm */
 void RTC_Alarm_IRQHandler(RTC_HandleTypeDef *hrtc) {
     HAL_RTC_AlarmIRQHandler(hrtc);  // Appeler le gestionnaire d'interruption HAL
