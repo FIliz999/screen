@@ -22,6 +22,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ili9341/ili9341.h"
+#include "def.h"
+#include "time.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,6 +103,17 @@ int main(void)
   MX_SPI3_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
+  ILI9341_InitWindowsWithFont(hspi3, 0x0000);
+  uint16_t text_color = 0xFFFF; // Blanc
+  char timeChar[6];
+
+  sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
+  ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+
+  RTC_TimeTypeDef currentTime;
+  uint8_t lastMinutes = TIME_GetTime(&hrtc).Minutes;
+  uint8_t lastSeconds = 0xFF;
   printf("RTC time\n");
   /* USER CODE END 2 */
 
@@ -110,11 +124,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
-	  HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
-	  printf("Date year %02d\n", 2000 + Date.Year);
-	  printf("Time %02d\n", Time.Seconds);
-	  HAL_Delay(500);
+
+	HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
+	printf("Date year %02d\n", 2000 + Date.Year);
+	printf("Time %02d\n", Time.Seconds);
+	HAL_Delay(500);
   }
   /* USER CODE END 3 */
 }
