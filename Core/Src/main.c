@@ -90,7 +90,6 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -108,8 +107,9 @@ int main(void)
   sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
   ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
 
-
+  RTC_TimeTypeDef currentTime;
   uint8_t lastMinutes = TIME_GetTime(&hrtc).Minutes;
+  uint8_t lastSeconds = 0xFF;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,11 +117,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	if (lastMinutes != TIME_GetTime(&hrtc).Minutes)
+	/* Lire l'heure actuelle */
+	currentTime = TIME_GetTime(&hrtc);
+	if (lastMinutes != currentTime.Minutes)
 	{
 		ILI9341_InitWindowsWithFont(hspi3, 0x0000);
 		uint16_t text_color = 0xFFFF; // Blanc
-		ILI9341_InitDrawString("00:16", text_color, 0x0000, hspi3);
+		sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
+		ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
 	}
     /* USER CODE BEGIN 3 */
 	  HAL_Delay(100);

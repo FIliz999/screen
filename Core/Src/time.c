@@ -17,7 +17,7 @@ void TIME_SetRTCTime(RTC_HandleTypeDef *hrtc)
     sTime.Minutes = MIN;        // Minutes
     sTime.Seconds = 40;        // Secondes
     sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE; // Pas d'ajustement pour l'heure d'été
-    sTime.StoreOperation = RTC_STOREOPERATION_RESET; // Pas de stockage spécial
+    sTime.StoreOperation = RTC_STOREOPERATION_SET; // Pas de stockage spécial
 
     /* Appliquer l'heure */
     if (HAL_RTC_SetTime(hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK) {
