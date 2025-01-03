@@ -24,7 +24,6 @@
 /* USER CODE BEGIN Includes */
 #include "ili9341/ili9341.h"
 #include "def.h"
-#include "time.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,13 +106,12 @@ int main(void)
   ILI9341_InitWindowsWithFont(hspi3, 0x0000);
   uint16_t text_color = 0xFFFF; // Blanc
   char timeChar[6];
+  HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 
-  sprintf(timeChar, "%02d:%02d", (char)sTime.Hours, (char)sTime.Minutes);
+  sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
   ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+  uint8_t lastMinutes = Time.Minutes;
 
-  RTC_TimeTypeDef currentTime;
-  uint8_t lastMinutes = TIME_GetTime(&hrtc).Minutes;
-  uint8_t lastSeconds = 0xFF;
   printf("RTC time\n");
   /* USER CODE END 2 */
 
@@ -127,7 +125,14 @@ int main(void)
 
 	HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
-	printf("Date year %02d\n", 2000 + Date.Year);
+	if (lastMinutes != Time.Minutes)
+	{
+		ILI9341_InitWindowsWithFont(hspi3, 0x0000);
+		sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
+		ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+		lastMinutes = Time.Minutes;
+	}
+
 	printf("Time %02d\n", Time.Seconds);
 	HAL_Delay(500);
   }
