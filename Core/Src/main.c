@@ -109,7 +109,7 @@ int main(void)
   HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 
   sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
-  ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+  ILI9341_InitDrawString(timeChar, hspi3);
   uint8_t lastMinutes = Time.Minutes;
 
   printf("RTC time\n");
@@ -127,9 +127,7 @@ int main(void)
 	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
 	if (lastMinutes != Time.Minutes)
 	{
-		ILI9341_InitWindowsWithFont(hspi3, 0x0000);
-		sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
-		ILI9341_InitDrawString(timeChar, text_color, 0x0000, hspi3);
+		changeTime(Time, hspi3);
 		lastMinutes = Time.Minutes;
 	}
 

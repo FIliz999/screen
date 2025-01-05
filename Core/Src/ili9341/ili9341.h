@@ -44,6 +44,13 @@ SOFTWARE.
 
 #define GUI_WIDTH 320
 #define GUI_HEIGHT 240
+#define Y_CHAR 20
+
+// Les différents X de l'heure
+#define X_DIX_HOUR 5
+#define X_UNIT_HOUR 68
+#define X_DIX_MIN 194
+#define X_UNIT_MIN 257
 
 void ILI9341_Init(SPI_HandleTypeDef hspi3);
 void ILI9341_SetWindow(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y, SPI_HandleTypeDef hspi3);
@@ -51,10 +58,11 @@ void ILI9341_DrawBitmap(uint16_t w, uint16_t h, uint8_t *s, SPI_HandleTypeDef hs
 void ILI9341_WritePixel(uint16_t x, uint16_t y, uint16_t color, SPI_HandleTypeDef hspi3);
 void ILI9341_EndOfDrawBitmap(void);
 void ILI9341_InitWindowsWithFont(SPI_HandleTypeDef hspi3, uint16_t color);
-void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3);
-void ILI9341_InitDrawString(const char *str, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3);
+void ILI9341_DrawChar(uint16_t x, char c, SPI_HandleTypeDef hspi3);
+void ILI9341_InitDrawString(const char *str, SPI_HandleTypeDef hspi3);
 void LCD_WR_REG(uint8_t data, SPI_HandleTypeDef hspi3);
 void LCD_IO_WriteMultipleData(uint8_t *pData, uint32_t Size, SPI_HandleTypeDef hspi3);
+void changeTime(RTC_TimeTypeDef Time, SPI_HandleTypeDef hspi3);
 
 #ifdef __cplusplus
 }

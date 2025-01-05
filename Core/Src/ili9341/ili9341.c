@@ -60,6 +60,8 @@ static void CS_L(void);
 static void DC_L(void);
 static void DC_H(void);
 static void LED_H(void);
+static void changeMinutes(int x, uint8_t minute, SPI_HandleTypeDef hspi3);
+static void changeHours();
 
 // Initialization
 void ILI9341_Init(SPI_HandleTypeDef hspi3)
@@ -309,12 +311,6 @@ void LCD_IO_WriteMultipleData(uint8_t *pData, uint32_t Size, SPI_HandleTypeDef h
 	//HAL_SPI_Transmit_DMA(&hspi3, (uint8_t*)pData, Size );
 	while(spiDmaTransferComplete == 0);
 }
-/*
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	spiDmaTransferComplete = 1;
-}
-*/
 
 void ILI9341_InitWindowsWithFont(SPI_HandleTypeDef hspi3, uint16_t color){
 	// Efface l'écran avec une couleur de fond (noir)
@@ -327,7 +323,7 @@ void ILI9341_InitWindowsWithFont(SPI_HandleTypeDef hspi3, uint16_t color){
 }
 
 // Dessine un caractère en utilisant une police 8x8
-void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
+void ILI9341_DrawChar(uint16_t x, char c, SPI_HandleTypeDef hspi3) {
 	if (c < 32 || c > 126) {
 	        c = '?'; // Si le caractère n'est pas supporté
 	}
@@ -341,35 +337,32 @@ void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t b
 	for (int i = 0; i < 8; i++) {  // Parcourt les lignes (de 0 à 7)
 		for (int j = 0; j < 5; j++) {  // Parcourt les colonnes (de 0 à 4)
 			if (glyph[j] & (1 << i)) {  // Vérifie si le bit est 1 (pixel actif)
-				ILI9341_WritePixelsFullHeight(x, y, i, j, scaleX, scaleY, color, hspi3);
+				ILI9341_WritePixelsFullHeight(x, Y_CHAR, i, j, scaleX, scaleY, 0xFFFF, hspi3);
 			} else {
 				// Dessiner le fond pour ce bloc
-				ILI9341_WritePixelsFullHeight(x, y, i, j, scaleX, scaleY, bgcolor, hspi3);
+				ILI9341_WritePixelsFullHeight(x, Y_CHAR, i, j, scaleX, scaleY, 0x0000, hspi3);
 			}
 		}
 	}
 
     // Ajoute un espace entre les caractères
     for (int8_t j = 0; j < 7; j++) {
-        ILI9341_WritePixel(x + 5, y + j, bgcolor, hspi3);
+        ILI9341_WritePixel(x + 5, Y_CHAR + j, 0x0000, hspi3);
     }
 }
 
 // Dessine une chaîne de caractères
-void ILI9341_InitDrawString(const char *str, uint16_t color, uint16_t bgcolor, SPI_HandleTypeDef hspi3) {
+void ILI9341_InitDrawString(const char *str, SPI_HandleTypeDef hspi3) {
 	int cmpt = 0;
-	uint16_t y = 20;
+	uint16_t x = MARGE_NUMBERS_X;
 	if (strlen(str) == 5)
 	{
 		while (*str)
 		{
-			uint16_t x = MARGE_NUMBERS_X;
 			if (cmpt != 0){
 				x = MARGE_NUMBERS_X + cmpt * SIZE_NUMBERS + INTERVALE_NUMBERS * cmpt;
 			}
-
-			ILI9341_DrawChar(x, y, *str, color, bgcolor, hspi3);
-			x += 6; // Largeur d'un caractère (8 pixels + 1 pixel de marge)
+			ILI9341_DrawChar(x, *str, hspi3);
 			str++;
 			cmpt += 1;
 		}
@@ -378,6 +371,43 @@ void ILI9341_InitDrawString(const char *str, uint16_t color, uint16_t bgcolor, S
 	{
 		printf("Erreur le string est composé de plus de 5 éléments");
 	}
+}
+
+void changeTime(RTC_TimeTypeDef Time, SPI_HandleTypeDef hspi3)
+{
+	if (Time.Minutes == 00)
+	{
+		changeHours();
+		//changeMinutes(Time.Minutes, hspi3);
+	}
+	else
+	{
+		uint8_t diz = Time.Minutes / 10; // Get the dizaines
+		uint8_t unite = Time.Minutes % 10; // get unités
+		if (unite != 0)
+		{
+			// Il faut juste modifier l'unité
+			changeMinutes(X_UNIT_MIN, unite, hspi3);
+		}
+		else
+		{
+			// Il faut modifier l'unité et la dizaine des minutes
+			changeMinutes(X_DIX_MIN, diz, hspi3);
+			changeMinutes(X_UNIT_MIN, unite, hspi3);
+		}
+
+	}
+}
+
+static void changeMinutes(int x, uint8_t minute, SPI_HandleTypeDef hspi3)
+{
+	char caractere = minute + '0';  // Conversion en caractère
+	ILI9341_DrawChar(x, caractere, hspi3);
+}
+
+static void changeHours()
+{
+
 }
 
 static void ILI9341_WritePixelsFullHeight(uint16_t x, uint16_t y, int i, int j, uint16_t scaleX, uint16_t scaleY, uint16_t color, SPI_HandleTypeDef hspi3 )
