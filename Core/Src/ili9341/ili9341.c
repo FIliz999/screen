@@ -60,8 +60,7 @@ static void CS_L(void);
 static void DC_L(void);
 static void DC_H(void);
 static void LED_H(void);
-static void changeMinutes(int x, uint8_t minute, SPI_HandleTypeDef hspi3);
-static void changeHours();
+static void change(int x, uint8_t time, SPI_HandleTypeDef hspi3);
 
 // Initialization
 void ILI9341_Init(SPI_HandleTypeDef hspi3)
@@ -377,8 +376,20 @@ void changeTime(RTC_TimeTypeDef Time, SPI_HandleTypeDef hspi3)
 {
 	if (Time.Minutes == 00)
 	{
-		changeHours();
-		//changeMinutes(Time.Minutes, hspi3);
+		uint8_t diz = Time.Hours / 10; // Get the dizaines
+		uint8_t unite = Time.Hours % 10; // get unités
+		if (unite != 0)
+		{
+			change(X_UNIT_HOUR, unite, hspi3);
+		}
+		else
+		{
+			change(X_DIX_HOUR, diz, hspi3);
+			change(X_UNIT_HOUR, unite, hspi3);
+		}
+		// Il faut modifier l'unité et la dizaine des minutes
+		change(X_DIX_MIN, 0, hspi3);
+		change(X_UNIT_MIN, 0, hspi3);
 	}
 	else
 	{
@@ -387,28 +398,24 @@ void changeTime(RTC_TimeTypeDef Time, SPI_HandleTypeDef hspi3)
 		if (unite != 0)
 		{
 			// Il faut juste modifier l'unité
-			changeMinutes(X_UNIT_MIN, unite, hspi3);
+			change(X_UNIT_MIN, unite, hspi3);
 		}
 		else
 		{
 			// Il faut modifier l'unité et la dizaine des minutes
-			changeMinutes(X_DIX_MIN, diz, hspi3);
-			changeMinutes(X_UNIT_MIN, unite, hspi3);
+			change(X_DIX_MIN, diz, hspi3);
+			change(X_UNIT_MIN, unite, hspi3);
 		}
 
 	}
 }
 
-static void changeMinutes(int x, uint8_t minute, SPI_HandleTypeDef hspi3)
+static void change(int x, uint8_t time, SPI_HandleTypeDef hspi3)
 {
-	char caractere = minute + '0';  // Conversion en caractère
+	char caractere = time + '0';  // Conversion en caractère
 	ILI9341_DrawChar(x, caractere, hspi3);
 }
 
-static void changeHours()
-{
-
-}
 
 static void ILI9341_WritePixelsFullHeight(uint16_t x, uint16_t y, int i, int j, uint16_t scaleX, uint16_t scaleY, uint16_t color, SPI_HandleTypeDef hspi3 )
 {

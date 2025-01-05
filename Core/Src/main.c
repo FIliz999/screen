@@ -223,8 +223,8 @@ static void MX_RTC_Init(void)
 
   /** Initialize RTC and set the Time and Date
   */
-  sTime.Hours = 10;
-  sTime.Minutes = 24;
+  sTime.Hours = 19;
+  sTime.Minutes = 59;
   sTime.Seconds = 45;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
