@@ -372,6 +372,10 @@ void ILI9341_InitDrawString(const char *str, SPI_HandleTypeDef hspi3) {
 	}
 }
 
+/*
+ * Methode de changement de temps
+ * Il y a deux parties, une pour les heures et l'autre pour les minutes.
+ */
 void changeTime(RTC_TimeTypeDef Time, SPI_HandleTypeDef hspi3)
 {
 	if (Time.Minutes == 00)

@@ -122,7 +122,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
 	HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
 	if (lastMinutes != Time.Minutes)
@@ -130,8 +129,6 @@ int main(void)
 		changeTime(Time, hspi3);
 		lastMinutes = Time.Minutes;
 	}
-
-	printf("Time %02d\n", Time.Seconds);
 	HAL_Delay(500);
   }
   /* USER CODE END 3 */
