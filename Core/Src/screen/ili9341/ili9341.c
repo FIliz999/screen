@@ -33,7 +33,7 @@ SOFTWARE.
 
  */
 
-#include "ili9341.h"
+#include "screen/ili9341/ili9341.h"
 
 // This function is for compatible HiLetgo ILI9341
 
@@ -61,6 +61,7 @@ static void DC_L(void);
 static void DC_H(void);
 static void LED_H(void);
 static void change(int x, uint8_t time, SPI_HandleTypeDef hspi3);
+static void blackFond(SPI_HandleTypeDef hspi3);
 
 // Initialization
 void ILI9341_Init(SPI_HandleTypeDef hspi3)
@@ -183,6 +184,7 @@ void ILI9341_Init(SPI_HandleTypeDef hspi3)
 
 	LCD_direction(ROTATE_270, hspi3);
 
+	blackFond(hspi3);
 }
 
 void ILI9341_SetWindow(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y, SPI_HandleTypeDef hspi3)
@@ -311,12 +313,12 @@ void LCD_IO_WriteMultipleData(uint8_t *pData, uint32_t Size, SPI_HandleTypeDef h
 	while(spiDmaTransferComplete == 0);
 }
 
-void ILI9341_InitWindowsWithFont(SPI_HandleTypeDef hspi3, uint16_t color){
+static void blackFond(SPI_HandleTypeDef hspi3){
 	// Efface l'écran avec une couleur de fond (noir)
 	ILI9341_SetWindow(0, 0, H_LCD - 1, W_LCD - 1, hspi3);
 	for (uint16_t x = 0; x < W_LCD; x++) {
 		for (uint16_t y = 0; y < H_LCD; y++) {
-			ILI9341_WritePixel(x, y, color, hspi3);
+			ILI9341_WritePixel(x, y, 0x0000, hspi3);
 		}
 	}
 }

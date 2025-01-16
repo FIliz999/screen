@@ -18,12 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stdio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "ili9341/ili9341.h"
-#include "def.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,8 +48,6 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 RTC_DateTypeDef Date;
 RTC_TimeTypeDef Time;
-char time[10];
-char date[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,16 +98,12 @@ int main(void)
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
   ILI9341_Init(hspi3);  // Initialisation de l'écran ILI9341
-  ILI9341_InitWindowsWithFont(hspi3, 0x0000);
-  uint16_t text_color = 0xFFFF; // Blanc
   char timeChar[6];
   HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 
   sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
   ILI9341_InitDrawString(timeChar, hspi3);
   uint8_t lastMinutes = Time.Minutes;
-
-  printf("RTC time\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */

@@ -1,4 +1,4 @@
-#include "fonts.h"
+#include "screen/ili9341/fonts.h"
 
 // Exemple de police 8x8 (uniquement les caractères ASCII de base)
 const uint8_t FONTS5_8[][5] = {

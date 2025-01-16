@@ -22,8 +22,9 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Src/ili9341 \
 Core/Src \
+Core/Src/screen/ili9341 \
+Core/Src/timer \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \
 

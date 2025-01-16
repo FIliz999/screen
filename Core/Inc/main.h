@@ -31,7 +31,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "screen/ili9341/ili9341.h"
+#include "stdio.h"
+#include "clock.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
