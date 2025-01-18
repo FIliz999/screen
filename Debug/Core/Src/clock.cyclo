@@ -1,0 +1,4 @@
+../Core/Src/clock.c:11:6:CLOCK_init	1
+../Core/Src/clock.c:19:6:CLOCK_start	1
+../Core/Src/clock.c:31:6:CLOCK_stop	1
+../Core/Src/clock.c:36:6:CLOCK_clean	1

@@ -8,26 +8,15 @@
 #ifndef INC_CLOCK_H_
 #define INC_CLOCK_H_
 
+#include "timer/timer.h"
+#include "screen/ili9341/ili9341.h"
 
-void init()
-{
+#define LENGHT_TIMER 6
 
-}
-
-void start()
-{
-
-}
-
-void stop()
-{
-
-}
-
-void clean()
-{
-
-}
+void CLOCK_init();
+void CLOCK_start();
+void CLOCK_stop();
+void CLOCK_clean();
 
 
 #endif /* INC_CLOCK_H_ */

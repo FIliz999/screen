@@ -1,0 +1,6 @@
+../Core/Src/timer/timer.c:21:13:MX_RTC_Init	4
+../Core/Src/timer/timer.c:84:6:MX_USART2_UART_Init	2
+../Core/Src/timer/timer.c:112:5:__io_putchar	1
+../Core/Src/timer/timer.c:118:17:TIMER_getTime	1
+../Core/Src/timer/timer.c:123:6:TIMER_init	1
+../Core/Src/timer/timer.c:131:6:TIMER_updateTime	2

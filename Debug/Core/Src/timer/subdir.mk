@@ -5,13 +5,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../Core/Src/timer/time.c 
+../Core/Src/timer/timer.c 
 
 OBJS += \
-./Core/Src/timer/time.o 
+./Core/Src/timer/timer.o 
 
 C_DEPS += \
-./Core/Src/timer/time.d 
+./Core/Src/timer/timer.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +21,7 @@ Core/Src/timer/%.o Core/Src/timer/%.su Core/Src/timer/%.cyclo: ../Core/Src/timer
 clean: clean-Core-2f-Src-2f-timer
 
 clean-Core-2f-Src-2f-timer:
-	-$(RM) ./Core/Src/timer/time.cyclo ./Core/Src/timer/time.d ./Core/Src/timer/time.o ./Core/Src/timer/time.su
+	-$(RM) ./Core/Src/timer/timer.cyclo ./Core/Src/timer/timer.d ./Core/Src/timer/timer.o ./Core/Src/timer/timer.su
 
 .PHONY: clean-Core-2f-Src-2f-timer
 

@@ -5,23 +5,36 @@
  *      Author: basti
  */
 
+#include "clock.h"
 
-void init()
+
+void CLOCK_init()
+{
+	ILI9341_Init();
+	char timerInit[LENGHT_TIMER];
+	TIMER_init(timerInit);
+	ILI9341_InitDrawString(timerInit);
+}
+
+void CLOCK_start()
+{
+	uint8_t lastMinutes = TIMER_getTime().Minutes;
+	while(1)
+	{
+		if (TIMER_updateTime(&lastMinutes))
+		{
+			//Return true => change time
+		}
+		HAL_Delay(500);
+	}
+}
+
+void CLOCK_stop()
 {
 
 }
 
-void start()
-{
-
-}
-
-void stop()
-{
-
-}
-
-void clean()
+void CLOCK_clean()
 {
 
 }
