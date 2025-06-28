@@ -25,7 +25,8 @@ void CLOCK_start()
 		{
 			//Return true => change time
 		}
-		HAL_Delay(500);
+		printf("Salut toi\n");
+		HAL_Delay(2000);
 	}
 }
 
