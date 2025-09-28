@@ -121,6 +121,8 @@ int main(void)
   CLOCK_init();
   CLOCK_start();
 
+  //CLOCK_start();
+
 
   /* USER CODE END 3 */
 }

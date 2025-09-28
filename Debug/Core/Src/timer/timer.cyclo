@@ -1,4 +1,4 @@
 ../Core/Src/timer/timer.c:18:5:__io_putchar	1
 ../Core/Src/timer/timer.c:25:17:TIMER_getTime	1
 ../Core/Src/timer/timer.c:30:6:TIMER_init	1
-../Core/Src/timer/timer.c:39:6:TIMER_updateTime	2
+../Core/Src/timer/timer.c:36:6:TIMER_updateTime	2

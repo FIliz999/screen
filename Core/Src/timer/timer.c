@@ -29,9 +29,6 @@ RTC_TimeTypeDef TIMER_getTime()
 
 void TIMER_init(char timeChar[])
 {
-	MX_USART1_UART_Init();
-	MX_USART2_UART_Init();
-	MX_RTC_Init();
 	HAL_RTC_GetTime(&hrtc, &Time, RTC_FORMAT_BIN);
 	sprintf(timeChar, "%02d:%02d", (char)Time.Hours, (char)Time.Minutes);
 }
@@ -43,7 +40,7 @@ bool TIMER_updateTime(uint8_t *lastMinutes)
 	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
 	if (lastMinutes != &Time.Minutes)
 	{
-		ILI9341_ChangeTime(Time.Hours, Time.Minutes);
+		ILI9341_ChangeTime(Time);
 		lastMinutes = &Time.Minutes;
 		return true;
 	}
