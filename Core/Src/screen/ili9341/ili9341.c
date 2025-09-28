@@ -24,6 +24,7 @@
 #define FONT_HEIGHT 8
 
 SPI_HandleTypeDef hspi3;
+extern DMA_HandleTypeDef hdma_spi3_tx;
 static __IO uint8_t spiDmaTransferComplete;
 // ---------- Frame buffer ----------
 static uint16_t frame_buffer[BUFFER_HEIGHT][BUFFER_WIDTH];
@@ -188,7 +189,7 @@ void ILI9341_ChangeTime(uint8_t hours, uint8_t minutes)
 void ILI9341_Init()
 {
     MX_SPI3_Init();
-    MX_DMA_Init();
+    //MX_DMA_Init();
     RESET_L(); HAL_Delay(50);
     RESET_H(); HAL_Delay(50);
 
