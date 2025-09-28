@@ -1,12 +1,10 @@
-../Core/Src/screen/ili9341/ili9341.c:19:6:HAL_SPI_TxCpltCallback	2
 ../Core/Src/screen/ili9341/ili9341.c:27:13:SPI_DMA_Transmit	3
 ../Core/Src/screen/ili9341/ili9341.c:37:13:LCD_WR_REG	1
-../Core/Src/screen/ili9341/ili9341.c:43:13:LCD_WR_DATA	1
+../Core/Src/screen/ili9341/ili9341.c:19:6:HAL_SPI_TxCpltCallback	2
 ../Core/Src/screen/ili9341/ili9341.c:50:6:ILI9341_Reset	1
-../Core/Src/screen/ili9341/ili9341.c:59:13:ILI9341_WritePixelToBuffer	3
-../Core/Src/screen/ili9341/ili9341.c:66:6:ILI9341_ChangeTime	1
-../Core/Src/screen/ili9341/ili9341.c:76:6:ILI9341_DrawChar	6
+../Core/Src/screen/ili9341/ili9341.c:76:6:ILI9341_DrawChar	1
 ../Core/Src/screen/ili9341/ili9341.c:92:6:ILI9341_DrawString	2
+../Core/Src/screen/ili9341/ili9341.c:66:6:ILI9341_ChangeTime	1
 ../Core/Src/screen/ili9341/ili9341.c:103:6:ILI9341_Init	1
 ../Core/Src/screen/ili9341/ili9341.c:121:6:ILI9341_SetWindow	1
 ../Core/Src/screen/ili9341/ili9341.c:143:6:ILI9341_WritePixel	1

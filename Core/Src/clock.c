@@ -11,9 +11,10 @@
 void CLOCK_init()
 {
 	ILI9341_Init();
-	char timerInit[LENGHT_TIMER];
-	TIMER_init(timerInit);
-	ILI9341_DrawString(10, 20, timerInit, 0xFFFF, 0x0000);
+	ILI9341_TestScreen();
+	// char timerInit[LENGHT_TIMER];
+	// TIMER_init(timerInit);
+	// ILI9341_DrawString(10, 20, timerInit, 0xFFFF, 0x0000);
 }
 
 void CLOCK_start()

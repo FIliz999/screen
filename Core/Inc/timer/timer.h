@@ -16,6 +16,5 @@
 void TIMER_init(char timeChar[]);
 RTC_TimeTypeDef TIMER_getTime();
 bool TIMER_updateTime(uint8_t *lastMinutes);
-void MX_USART2_UART_Init(void);
 int __io_putchar(int ch);
 #endif /* INC_TIME_H_ */
