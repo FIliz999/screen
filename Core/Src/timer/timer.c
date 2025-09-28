@@ -171,7 +171,7 @@ bool TIMER_updateTime(uint8_t *lastMinutes)
 	HAL_RTC_GetDate(&hrtc, &Date, RTC_FORMAT_BIN);
 	if (lastMinutes != &Time.Minutes)
 	{
-		ILI9341_ChangeTime(Time);
+		ILI9341_ChangeTime(Time.Hours, Time.Minutes);
 		lastMinutes = &Time.Minutes;
 		return true;
 	}

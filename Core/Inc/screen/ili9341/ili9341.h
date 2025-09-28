@@ -51,12 +51,14 @@ SOFTWARE.
 #define X_DIX_MIN 194
 #define X_UNIT_MIN 257
 
-void ILI9341_Init();
-void ILI9341_SetWindow(uint16_t start_x, uint16_t start_y, uint16_t end_x, uint16_t end_y, SPI_HandleTypeDef hspi3);
-void ILI9341_WritePixel(uint16_t x, uint16_t y, uint16_t color, SPI_HandleTypeDef hspi3);
-void ILI9341_DrawChar(uint16_t x, char c, SPI_HandleTypeDef hspi3);
-void ILI9341_InitDrawString(const char *str);
-void ILI9341_ChangeTime(RTC_TimeTypeDef Time);
+// Fonctions publiques
+void ILI9341_Init(void);
+void ILI9341_Clear(uint16_t color);
+void ILI9341_UpdateScreen(void);
+void ILI9341_DrawChar(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bg);
+void ILI9341_DrawString(uint16_t x, uint16_t y, const char* str, uint16_t color, uint16_t bg);
+void ILI9341_ChangeTime(uint8_t hours, uint8_t minutes);
+
 
 #ifdef __cplusplus
 }
